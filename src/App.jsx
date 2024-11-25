@@ -7,10 +7,35 @@ import { db } from './data/db'
 function App() {
 
   const [data, setData] = useState(db)
+  const [cart, setCart] = useState([])
+
+  function addToCart(item) {
+
+    const itemExists = cart.findIndex(guitar => guitar.id === item.id)
+
+    if(itemExists >= 0) {
+      const updateCart = [...cart]
+      updateCart[itemExists].quantity++
+      setCart(updateCart)
+    } else {
+      console.log('this item not exist')
+      item.quantity = 1
+      setCart([...cart, item])
+    }
+  }
+
+  function removeFromCart() {
+    console.log('Removing item...')
+  }
 
   return (
     <>
-      <Header />
+      <Header 
+        cart={cart}
+        removeFromCart={removeFromCart}
+      
+      />
+
       <main className="container-xl mt-5">
         <h2 className="text-center">Our Collection</h2>
 
@@ -19,6 +44,8 @@ function App() {
             <Guitar 
               key={guitar.id}
               guitar={guitar}
+              setCart={setCart}
+              addToCart={addToCart}
             />
           )}
           
@@ -28,7 +55,7 @@ function App() {
       <footer className="bg-dark mt-5 py-5">
         <div className="container-xl">
           <p className="text-white text-center fs-4 mt-4 m-md-0">
-            GuitarLA - Todos los derechos Reservados
+            GuitarLA - All rights reserved.
           </p>
         </div>
       </footer>
