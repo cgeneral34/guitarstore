@@ -1,13 +1,24 @@
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from './components/Header'
 import Guitar from './components/Guitar'
 import { db } from './data/db'
 
 function App() {
 
+  const initialCart = () => {
+    const localStorageCart = localStorage.getItem('cart')
+    return localStorageCart ? JSON.parse(localStorageCart) : []
+  }
+
   const [data, setData] = useState(db)
-  const [cart, setCart] = useState([])
+  const [cart, setCart] = useState(initialCart)
+
+  const MIN_ITEM = 1
+
+  useEffect (() => {
+    localStorage.setItem('cart', JSON.stringify(cart))
+  }, [cart])
 
   function addToCart(item) {
 
@@ -24,15 +35,49 @@ function App() {
     }
   }
 
-  function removeFromCart() {
-    console.log('Removing item...')
+  function removeFromCart(id) {
+    setCart(prevCart => prevCart.filter(guitar => guitar.id !== id))
   }
+
+  function incresesCart(id) {
+    const updateCart = cart.map( item => {
+      if(item.id === id) {
+        return {
+          ...item,
+          quantity: item.quantity + 1
+        }
+      } 
+      return item
+    })
+    setCart(updateCart)
+  }
+
+  function decresesCart(id) {
+    const updateCart = cart.map( item => {
+      if(item.id === id && item.quantity > MIN_ITEM) {
+        return {
+          ...item, 
+          quantity: item.quantity - 1
+        }
+      }
+      return item
+    })
+    setCart(updateCart)
+  }
+
+  function clearCart() {
+    setCart([])
+  }
+
 
   return (
     <>
       <Header 
         cart={cart}
         removeFromCart={removeFromCart}
+        incresesCart={incresesCart}
+        decresesCart={decresesCart}
+        clearCart={clearCart}
       
       />
 

@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-function Header({cart, removeFromCart}) {
+function Header({cart, removeFromCart, incresesCart, decresesCart, clearCart}) {
 
     const isEmpty = useMemo(() => cart.length === 0, [cart])
     const cartTotal = useMemo(() => cart.reduce((total, item) => total + (item.quantity * item.price), 0), [cart])
@@ -54,18 +54,18 @@ function Header({cart, removeFromCart}) {
                                             <td>{guitar.name}</td>
                                             <td className="fw-bold">{guitar.price}</td>
                                             <td className="flex align-items-start gap-4">
-                                            <button type="button" className="btn btn-dark">
+                                            <button type="button" className="btn btn-dark" onClick={() => decresesCart(guitar.id)}>
                                                 -
                                             </button>
                                                 {guitar.quantity}
-                                            <button type="button" className="btn btn-dark">
+                                            <button type="button" className="btn btn-dark" onClick={() => incresesCart(guitar.id)}>
                                                 +
                                             </button>
                                             </td>
                                             <td>
                                             <button className="btn btn-danger" 
                                                     type="button"
-                                                    onClick={removeFromCart}
+                                                    onClick={() => removeFromCart(guitar.id)}
                                                     >
                                                      X
                                             </button>
@@ -82,8 +82,8 @@ function Header({cart, removeFromCart}) {
                         </>
                         )}
 
-                        <button className="btn btn-dark w-100 mt-3 p-2">
-                            Vaciar Carrito
+                        <button className="btn btn-dark w-100 mt-3 p-2" onClick={clearCart}>
+                            Clear Cart
                         </button>
                         </div>
                     </div>
